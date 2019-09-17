@@ -1,0 +1,4 @@
+Record=TopLevelDocument|FileName=00_TOP.SchDoc
+Record=SheetSymbol|SourceDocument=00_TOP.SchDoc|Designator=DAC|SchDesignator=DAC|FileName=03_DAC.SchDoc|SymbolType=Normal|RawFileName=03_DAC.SchDoc|DesignItemId= |SourceLibraryName= |ObjectKind=Sheet Symbol|RevisionGUID= |ItemGUID= |VaultGUID= 
+Record=SheetSymbol|SourceDocument=00_TOP.SchDoc|Designator=MCU|SchDesignator=MCU|FileName=02_MCU.SchDoc|SymbolType=Normal|RawFileName=02_MCU.SchDoc|DesignItemId= |SourceLibraryName= |ObjectKind=Sheet Symbol|RevisionGUID= |ItemGUID= |VaultGUID= 
+Record=SheetSymbol|SourceDocument=00_TOP.SchDoc|Designator=Power|SchDesignator=Power|FileName=01_Power.SchDoc|SymbolType=Normal|RawFileName=01_Power.SchDoc|DesignItemId= |SourceLibraryName= |ObjectKind=Sheet Symbol|RevisionGUID= |ItemGUID= |VaultGUID= 

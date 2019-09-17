@@ -1,0 +1,6 @@
+*.d
+*.o
+*.bin
+*.hex
+*.elf
+*.bat

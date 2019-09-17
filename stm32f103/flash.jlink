@@ -1,0 +1,9 @@
+device STM32F103C8
+tif SWD
+speed 4000
+r
+h
+loadfile SteamPunkDashboard.hex, 0x8000000
+r
+g
+exit
