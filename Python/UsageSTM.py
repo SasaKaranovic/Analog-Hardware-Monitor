@@ -1,8 +1,12 @@
-import time, signal, serial, struct
+import time, signal, serial, struct, os
 import psutil
 import GPUtil
+import argparse
 
-SLEEP_SECONDS = 0.5
+
+
+SLEEP_SECONDS = 0.5     # How often sto update gauges. Lower is faster but requires more resources
+DEBUG_PRINT = False
 
 # Network usage calc
 NET_MBps = 300  # MegaBITS per second, use something like https://speedtest.net to find out
@@ -34,12 +38,14 @@ def UpdateGauges(dial1, dial2, dial3, dial4):
     elif invalidRange(dial4):
         return
 
-    print("CPU=%3d MEM=%3d NET=%3d GPU=%3d" % (dial1, dial2, dial3, dial4))
 
     sendString = "[s:%d:%d:%d:%d]\r\n" % (dial1, dial2, dial3, dial4)
-    print(sendString)
     ser.write(sendString.encode())
-    print("\r\n")
+    
+    if DEBUG_PRINT:
+        print("CPU=%3d MEM=%3d NET=%3d GPU=%3d" % (dial1, dial2, dial3, dial4))
+        print(sendString)
+        print("\r\n")
 
 
 def CycleDial(step=1, delay=0.5):
@@ -79,19 +85,49 @@ def network_usage():
 
 def gpu_usage():
     GPUs = GPUtil.getGPUs()
-    return int(GPUs[0].load*100)
+    try:
+        gpuLoad = int(GPUs[0].load*100)
+    except:
+        gpuLoad = 0
+    
+    return gpuLoad
 
+def printBanner():
+    print("                                         ")
+    print(" _____ _                             _   ")
+    print("|   __| |_ ___ ___ _____ ___ _ _ ___| |_ ")
+    print("|__   |  _| -_| .'|     | . | | |   | '_|")
+    print("|_____|_| |___|__,|_|_|_|  _|___|_|_|_,_|")
+    print("                        |_|              ")
+    print("                                    v1.0 ")
+    print(" ____          _                 _       ")
+    print("|    \ ___ ___| |_ ___ ___ ___ _| |      ")
+    print("|  |  | .'|_ -| . | . | .'|  _| . |      ")
+    print("|____/|__,|___|___|___|__,|_| |___|      ")
+    print("                                         ")
+    print("                                         ")
 
 def main():
-
     global ser
-    ser = serial.Serial('COM16', 115200, timeout=0, parity=serial.PARITY_EVEN, rtscts=0)
+
+    # Parse console input
+    default_serial = "/dev/ttyUSB0" if os.name=="posix" else "COM1"
+    parser = argparse.ArgumentParser(description='Steampunk Dashboard CLI interface.')
+    parser.add_argument('-c', '--com', required=True, default=default_serial, help='COM port (i.e. COM3 or /dev/tty0)')
+    args = parser.parse_args()
+
+
+    ser = serial.Serial(args.com, 115200, timeout=0, parity=serial.PARITY_EVEN, rtscts=0)
 
     # while True:
     #     CycleDial(5, 0.1)
     # exit()
+    printBanner()
 
+    print("Exercising dials min/max.")
     CycleDial(5, 0.1)
+
+    print("Running dashboard...")
     while True:
         UpdateGauges(cpu_usage(), memory_usage(), network_usage(), gpu_usage())
         time.sleep(SLEEP_SECONDS)
